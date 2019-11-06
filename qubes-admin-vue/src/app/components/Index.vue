@@ -1,12 +1,12 @@
 <template>
-  <div> 
-    <p>About</p>
+  <div>
+    <home-component></home-component>
   </div>
 </template>
 <script>
     export default {
         mounted () {
-            document.title = 'about';
+            document.title = 'index';
         }
     }
 </script>
