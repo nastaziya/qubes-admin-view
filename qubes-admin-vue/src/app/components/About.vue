@@ -1,5 +1,6 @@
 <template>
   <div> 
+    <sidebar-component></sidebar-component>
     <p>About</p>
   </div>
 </template>
