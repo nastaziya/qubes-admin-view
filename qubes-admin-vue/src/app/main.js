@@ -1,28 +1,25 @@
-
 import Vue from 'vue'
 import router from './router'
+import store from './store'
+import  '../css/qubes_dashboard.css'
+import BootstrapVue from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
-import  '../css/qubes_dashboard.css'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { fas } from '@fortawesome/free-solid-svg-icons'
-//import { far } from '@fortawesome/free-regular-svg-icons'
 import { fab } from '@fortawesome/free-brands-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
-// Add all icons to the library so you can use it in your page
-//library.add(fas, far, fab)
 library.add(fas, fab)
-Vue.component('font-awesome-icon', FontAwesomeIcon)
-//import './bootstrap';
+Vue.use(BootstrapVue)
 
-//import App from './App'//Vue.config.productionTip = false
+Vue.component('font-awesome-icon', FontAwesomeIcon)
 Vue.component('sidebar-component', require('./components/module/Sidebar.vue').default);
 Vue.component('topbar-component', require('./components/module/Topbar.vue').default);
 
 
 new Vue({
   router,
-  el: '#app'
-  //render: h => h(App)
+  store,
+  el: '#app',
 })

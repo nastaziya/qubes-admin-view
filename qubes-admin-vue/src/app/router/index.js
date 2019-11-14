@@ -4,9 +4,10 @@ Vue.use(VueRouter);
 
 // System routes
 const routes = [
-  {path: '/login', name:'login', component: require('../components/Login.vue').default},
+  {path: '/createvm', name:'createvm', component: require('../components/CreateVM.vue').default},
   {path: '/', name:'home', component: require('../components/Index.vue').default},
-  {path: '/about', name:'about', component: require('../components/About.vue').default}
+  {path: '/pools', name:'pools', component: require('../components/Pools.vue').default},
+  {path: '/labels', name:'labels', component: require('../components/Labels.vue').default}
 ];
 
 // Define VueRouter
