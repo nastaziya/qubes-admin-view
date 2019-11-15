@@ -4,12 +4,20 @@
     <div class="d-flex">
       <sidebar-component></sidebar-component>
       <div class="content p-4">
+        <b-alert
+          variant="success"
+          dismissible
+          fade
+          :show="showDismissibleAlert"
+          @dismissed="showDismissibleAlert=false"
+        >
+         {{alertmsg}}
+        </b-alert>
         <b-form @submit="onSubmit" @reset="onReset" v-if="show">
            <b-form-group
             id="input-group-1"
             label="Name:"
             label-for="input-1"
-            description="We'll never be hacked."
           >
             <b-form-input
               id="input-1"
@@ -75,6 +83,8 @@
           type: null
         },        
         show: true,
+        showDismissibleAlert: false,
+        alertmsg: null,
         type: [{ text: 'Select One', value: null }, 'AppVM', 'TemplateVM']
       }
     },
@@ -108,6 +118,9 @@
         }
         evt.preventDefault()
         this.$store.dispatch('qubes/addQube', payload)
+        this.showDismissibleAlert = true
+        this.alertmsg = payload.name + " created !"
+
       },
       onReset(evt) {
         evt.preventDefault()

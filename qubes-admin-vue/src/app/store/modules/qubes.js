@@ -21,13 +21,23 @@ const state = {
         commit('changeLoadingState', false)
     	})
     },
-    addQube ({ commit}, qubeObj) {
+    addQube ({dispatch, commit}, qubeObj) {
       if (!qubeObj) {
          return
       }
       axios.post(URL, qubeObj).then(_ => {
         commit('add_qube', qubeObj)
+        dispatch('loadData')
       })
+    },
+    deleteQube({dispatch, commit}, qubeObj)
+    {
+      console.log(qubeObj)
+      axios.delete(URL + '/' +  qubeObj).then(_ => {
+        commit('delete_qube', qubeObj)
+        dispatch('loadData')
+      })
+      
     }
   }
   
@@ -41,6 +51,9 @@ const state = {
     },
     add_qube (state, qubeObj) {
       state.qubes.push(qubeObj)
+    },
+    delete_qube (state, qubeObj) {
+      state.qubes.pop(qubeObj)
     }
   }
   export default {

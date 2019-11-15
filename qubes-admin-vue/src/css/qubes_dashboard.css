@@ -79,6 +79,10 @@ nav li.router-link-active
     rgba(0, 0, 0, 0.125);
     border-radius: 0.25rem;
 }
+.table-vm p{
+    padding-top: 10px;
+    padding-left: 5px;
+}
 .page-vm{
     border-top: 1px solid rgba(0, 0, 0, 0.125);
     padding-top: 15px;
@@ -98,3 +102,4 @@ nav li.router-link-active
 .page-link{
         color: #212529 !important;
 }
+
