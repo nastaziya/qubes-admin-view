@@ -7,7 +7,7 @@
         <div v-if="loading">
               <cube v-bind:loading="loading"></cube>
         </div>
-        <div v-else class="table-vm" id="tableID">
+        <div v-else class="table-vm">
           <table class="table table-hover table-bordered table-striped b-table-fixed">
             <thead>
               <tr>
@@ -52,9 +52,9 @@
             </tbody>
           </table>
           <div id="page-navigation" class="page-vm pagination justify-content-end">
-            <button class="page-link page-button" @click=movePages(-1)> Back </button>
+            <button class="page-link page-button" @click="movePages(-1)"> Back </button>
             <p>{{startRow / rowsPerPage + 1}} out of {{Math.floor(qubes.length / rowsPerPage)}}</p>
-            <button class="page-link page-button" @click=movePages(1)> Next </button>
+            <button class="page-link page-button" @click="movePages(1)"> Next </button>
           </div>
         </div>
       </div>
