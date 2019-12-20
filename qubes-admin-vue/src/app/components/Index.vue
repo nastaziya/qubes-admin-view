@@ -1,108 +1,136 @@
 <template>
-    <div>
-        <topbar-component></topbar-component>
-            <div class="d-flex">
-              <sidebar-component></sidebar-component>
-              
-              <div class="content p-4">
-                <div v-if="loading">
-                  loading...
-                </div>
-                <div v-else class="table-vm">
-                  <b-alert
-                  variant="danger"
-                  dismissible
-                  fade
-                  :show="showDismissibleAlert"
-                  @dismissed="showDismissibleAlert=false"
-                  >
-                    {{alertmsg}}
-                  </b-alert>
-                  <p>
-                    <b-button size="sm" @click="onRowSelected">Select</b-button>
-                    <b-button size="sm" @click="clearSelected">Clear selected</b-button>
-                    <b-button size="sm" @click="deleteVM" class="btn btn-danger">Delete</b-button>
-                    <!-- <b-button size="sm" @click="selectThirdRow">Select 3rd row</b-button>
-                    <b-button size="sm" @click="unselectThirdRow">Unselect 3rd row</b-button> -->
-                  </p>
-                  <b-table id="qubes-tab" striped hover 
-                    ref="selectableTable"
-                    selectable
-                    :items="qubes" :per-page="perPage"
-                    :current-page="currentPage"
-                     @row-selected="onRowSelected"
-                    
-                  >
-                    <template v-slot:cell(selected)="{ rowSelected }">
-                      <template v-if="rowSelected">
-                        <span aria-hidden="true">&check;</span>
-                        <span class="sr-only">Selected</span>
-                      </template>
-                      <template v-else>
-                        <span aria-hidden="true">&nbsp;</span>
-                        <span class="sr-only">Not selected</span>
-                      </template>
-                    </template>
-                  </b-table>
-                 
-                  <div class="page-vm">
-                    <b-pagination 
-                      v-model="currentPage"
-                      :total-rows="rows"
-                      :per-page="perPage"
-                      aria-controls="qubes-tab"
-                    ></b-pagination>
-                  </div>
-              </div>
-            </div>
+  <div>
+    <topbar-component></topbar-component>
+    <div class="d-flex">
+      <sidebar-component></sidebar-component>
+      <div class="content p-4">
+        <div v-if="loading">
+              <cube v-bind:loading="loading"></cube>
+        </div>
+        <div v-else class="table-vm" id="tableID">
+          <table class="table table-hover table-bordered table-striped b-table-fixed">
+            <thead>
+              <tr>
+                <th scope="col"> Name </th>
+                <th scope="col"> Type </th>
+                <th scope="col"> State </th>
+                <th scope="col"> Label </th>
+                <th scope="col"> Action </th>
+              </tr>
+            </thead>
+            <tbody class="list">
+              <tr v-for="vm in qubes.slice(startRow, startRow + 10)" v-bind:key="vm.name">                      
+                <td> {{vm.name}} </td>
+                <td> {{vm.type}} </td>
+                <td class="vm_label">
+                  <p v-bind:style="[vm.state == 'Halted' ?  {'background': '#ced2d8', 'color': 'black'} : 
+                  {'background': '#2eb85c',  'color': 'white'}]"> {{vm.state}} </p>
+                </td>
+                <td> {{vm.label}} </td>
+                <td class="action">
+                  <span class="on-off hvr-float">
+                    <!---------------------------POWER OFF/ON----------------------------------------->
+                    <!---------------------------POWER ON--------------------------------------------->
+                    <font-awesome-icon :icon="['fa', 'play']" class="play" 
+                    v-if="vm.state == 'Halted'" @click="runVM(vm.name)"/>
+                    <!---------------------------POWER OFF-------------------------------------------->
+                    <font-awesome-icon :icon="['fa', 'power-off']" class="power-off" 
+                    v-else-if="vm.state == 'Running'" @click="stopVM(vm.name)"/>
+                    <!---------------------------TRANSIENT STATE-------------------------------------->
+                    <circle-spin  
+                    v-else-if="vm.state == 'Transient'" class="loadcube">
+                    </circle-spin>
+                  </span>
+                  <span class="clone hvr-float">
+                    <font-awesome-icon :icon="['fa', 'clone']" @click="clonevm(vm)"/> 
+                  </span>
+                  <span class="del hvr-float">
+                    <font-awesome-icon :icon="['fa', 'trash-alt']"  @click="confirmAlert(vm.name)"/> 
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div id="page-navigation" class="page-vm pagination justify-content-end">
+            <button class="page-link page-button" @click=movePages(-1)> Back </button>
+            <p>{{startRow / rowsPerPage + 1}} out of {{Math.floor(qubes.length / rowsPerPage)}}</p>
+            <button class="page-link page-button" @click=movePages(1)> Next </button>
           </div>
+        </div>
+      </div>
     </div>
+  </div>
 </template>
 <script>
-    import { mapState } from 'vuex'
-    export default {
-      data () {
-        return {
-          perPage: 10,
-          currentPage: 1,
-          selected: '',
-          showDismissibleAlert: false,
-          alertmsg: null,
-        }
+  import { mapState } from 'vuex'
+  export default {
+    data(){
+      return {
+        startRow: 0,
+        rowsPerPage: 10,
+      }
+    },
+    computed: mapState({
+        qubes: state => state.qubes.qubes,
+        loading: state => state.qubes.loading,
+    }),
+    mounted () {
+      this.$store.dispatch('qubes/loadData');
+    },
+    methods: {
+      movePages: function(amount) {
+          var newStartRow = this.startRow + (amount * this.rowsPerPage);
+          if (newStartRow >= 0 && newStartRow < this.qubes.length) {
+            this.startRow = newStartRow;
+          }
       },
-      computed: mapState({
-         qubes: state => state.qubes.qubes,
-         loading: state => state.qubes.loading,
-         rows(){
-           return this.qubes.length 
-         }
-       
-      }),
-      mounted () {
-        this.$store.dispatch('qubes/loadData')
+      confirmAlert: function(vm_name)
+      {
+        swal({
+              title: "Are you sure?",
+              text: "Once deleted, you will not be able to recover " + vm_name + " VM!",
+              icon: "warning",
+              buttons: true,
+              dangerMode: true,
+          })
+          .then((willDelete) => {
+              if (willDelete) {
+                  swal({
+                  text: vm_name +  " has been deleted!",
+                  icon: "success",
+                  });
+                  this.deleteVM(vm_name);
+              } else {
+                  swal({text: vm_name + " is safe!"});
+              }
+          });
       },
-      methods: {
-        onRowSelected(items) {
-          this.selected = items
-        },
-        clearSelected() {
-          this.$refs.selectableTable.clearSelected()
-        },
-        selectThirdRow() {
-          // Rows are indexed from 0, so the third row is index 2
-          this.$refs.selectableTable.selectRow(2)
-        },
-        unselectThirdRow() {
-          // Rows are indexed from 0, so the third row is index 2
-          this.$refs.selectableTable.unselectRow(2)
-        },
-        deleteVM()
-        {
-          this.$store.dispatch('qubes/deleteQube', this.selected[0].name);
-          this.showDismissibleAlert = true
-          this.alertmsg = this.selected[0].name + " deleted !"
-
-        }
-      }    
-    }   
+      deleteVM(vm_name)
+      {
+        this.$store.dispatch('qubes/deleteQube', vm_name);
+      },
+      runVM(vm_name)
+      {
+        //to change -> load only this vm state, not all vm's state
+        this.$store.dispatch('qubes/loadData');
+        this.$store.dispatch('qubes/runQube', vm_name);
+      },
+      clonevm(vm)
+      {
+        const cloneQube = {"name": '', "type": vm.type, 'name_mother': vm.name}
+        swal("Clone name:", {
+          content: "input",
+        })
+        .then((value) => {
+          cloneQube.name = value
+          this.$store.dispatch('qubes/cloneQube', cloneQube);
+          swal(`Clone ${value} - created`);
+        });
+      },
+      stopVM(vm_name)
+      {
+        this.$store.dispatch('qubes/stopQube', vm_name);
+      }
+    }    
+  }   
 </script>

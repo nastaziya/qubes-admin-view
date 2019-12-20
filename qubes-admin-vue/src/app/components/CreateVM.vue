@@ -13,7 +13,8 @@
         >
          {{alertmsg}}
         </b-alert>
-        <b-form @submit="onSubmit" @reset="onReset" v-if="show">
+        <b-form @submit="onSubmit" @reset="onReset" v-if="show" @mouseover.native="hover = true"
+        >
            <b-form-group
             id="input-group-1"
             label="Name:"
@@ -32,7 +33,9 @@
               v-model="form.label"
               required
             >
-              <option :value="label.name" v-for="label in labels" >{{label.name}}</option>
+              <option :value="label.name" v-for="label in labels" v-bind:key="label.name">
+                {{label.name}} 
+              </option>
             </b-form-select>
           </b-form-group>
           <b-form-group id="input-group-3" label="Pool:" label-for="input-3">
@@ -41,7 +44,9 @@
               v-model="form.pool_identifier"
               required
             >
-              <option :value="pool.name" v-for="pool in pools">{{pool.name}}</option>
+              <option :value="pool.name" v-for="pool in pools" v-bind:key="pool.name">
+                {{pool.name}}
+              </option>
             </b-form-select>
           </b-form-group>
           <b-form-group id="input-group-4" label="Template:" label-for="input-4">
@@ -50,7 +55,9 @@
               v-model="form.template"
               required
             >
-              <option :value="template.name" v-for="template in templates">{{template.name}}</option>
+              <option :value="template.name" v-for="template in templates" v-bind:key="template.name">
+                {{template.name}}
+              </option>
             </b-form-select>
           </b-form-group>
           <b-form-group id="input-group-5" label="Type:" label-for="input-5">

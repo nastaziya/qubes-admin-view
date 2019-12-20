@@ -9,14 +9,16 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import { fas } from '@fortawesome/free-solid-svg-icons'
 import { fab } from '@fortawesome/free-brands-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import VueSpinners from 'vue-spinners'
 
+Vue.use(VueSpinners)
+window.swal = require('sweetalert');
 library.add(fas, fab)
 Vue.use(BootstrapVue)
 
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 Vue.component('sidebar-component', require('./components/module/Sidebar.vue').default);
 Vue.component('topbar-component', require('./components/module/Topbar.vue').default);
-
 
 new Vue({
   router,

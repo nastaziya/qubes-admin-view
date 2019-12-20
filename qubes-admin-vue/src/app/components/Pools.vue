@@ -9,7 +9,7 @@
         </div>
         <div v-else>
           <ul class="list-group">
-            <li  class="list-group-item" v-for="pool in pools">
+            <li  class="list-group-item" v-for="pool in pools" v-bind:key="pool.name">
               {{pool.name}}             
             </li>
           </ul>
