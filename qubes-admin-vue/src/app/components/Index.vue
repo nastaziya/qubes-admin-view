@@ -29,14 +29,14 @@
                 <td> {{vm.label}} </td>
                 <td class="action">
                   <span class="on-off hvr-float">
-                    <!---------------------------POWER OFF/ON----------------------------------------->
-                    <!---------------------------POWER ON--------------------------------------------->
+                    <!-- -------------------------POWER OFF/ON--------------------------------------- -->
+                    <!-- -------------------------POWER ON------------------------------------------- -->
                     <font-awesome-icon :icon="['fa', 'play']" class="play" 
                     v-if="vm.state == 'Halted'" @click="runVM(vm.name)"/>
-                    <!---------------------------POWER OFF-------------------------------------------->
+                    <!-- -------------------------POWER OFF------------------------------------------ -->
                     <font-awesome-icon :icon="['fa', 'power-off']" class="power-off" 
                     v-else-if="vm.state == 'Running'" @click="stopVM(vm.name)"/>
-                    <!---------------------------TRANSIENT STATE-------------------------------------->
+                    <!-- -------------------------TRANSIENT STATE------------------------------------ -->
                     <circle-spin  
                     v-else-if="vm.state == 'Transient'" class="loadcube">
                     </circle-spin>
@@ -80,7 +80,8 @@
     methods: {
       movePages: function(amount) {
           var newStartRow = this.startRow + (amount * this.rowsPerPage);
-          if (newStartRow >= 0 && newStartRow < this.qubes.length) {
+          if (newStartRow >= 0 && newStartRow < this.qubes.length) 
+          {
             this.startRow = newStartRow;
           }
       },
